@@ -1,7 +1,6 @@
 import { Plus, Coffee, Sun, Moon, Apple, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useMeals } from '@/hooks/useMeals';
-import type { DetectedFood } from '@/types/food';
+import { useMeals, type MealRecord } from '@/hooks/useMeals';
 import { useNavigate } from 'react-router-dom';
 
 export const MealTimeline = ({ dateStr }: { dateStr?: string }) => {
@@ -10,22 +9,21 @@ export const MealTimeline = ({ dateStr }: { dateStr?: string }) => {
 
     // Group meals by type
     const grouped = {
-        kahvalti: { label: 'KAHVALTI', icon: <Coffee className="size-5 text-amber-500" />, items: [] as (DetectedFood & { meal_id: string })[], total: 0 },
-        ogle: { label: 'ÖĞLE', icon: <Sun className="size-5 text-amber-500" />, items: [] as (DetectedFood & { meal_id: string })[], total: 0 },
-        aksam: { label: 'AKŞAM', icon: <Moon className="size-5 text-indigo-400" />, items: [] as (DetectedFood & { meal_id: string })[], total: 0 },
-        ara: { label: 'ARA ÖĞÜN', icon: <Apple className="size-5 text-emerald-500" />, items: [] as (DetectedFood & { meal_id: string })[], total: 0 },
+        breakfast: { label: 'KAHVALTI', icon: <Coffee className="size-5 text-amber-500" />, items: [] as MealRecord[], total: 0 },
+        lunch: { label: 'ÖĞLE', icon: <Sun className="size-5 text-amber-500" />, items: [] as MealRecord[], total: 0 },
+        dinner: { label: 'AKŞAM', icon: <Moon className="size-5 text-indigo-400" />, items: [] as MealRecord[], total: 0 },
+        snack: { label: 'ARA ÖĞÜN', icon: <Apple className="size-5 text-emerald-500" />, items: [] as MealRecord[], total: 0 },
     };
 
     meals.forEach(m => {
-        const type = (m.meal_type || 'ogle') as keyof typeof grouped;
+        const type = (m.meal_type || 'lunch') as keyof typeof grouped;
         if (grouped[type]) {
-            const mappedFoods = m.foods.map(f => ({ ...f, meal_id: m.id }));
-            grouped[type].items.push(...mappedFoods);
-            grouped[type].total += m.total_calories;
+            grouped[type].items.push(m);
+            grouped[type].total += (m.calories || 0);
         }
     });
 
-    const mealList = [grouped.kahvalti, grouped.ogle, grouped.aksam, grouped.ara];
+    const mealList = [grouped.breakfast, grouped.lunch, grouped.dinner, grouped.snack];
 
     return (
         <div className="space-y-6">
@@ -57,14 +55,14 @@ export const MealTimeline = ({ dateStr }: { dateStr?: string }) => {
                             meal.items.map((item, i) => (
                                 <div key={i} className="flex justify-between items-center text-sm p-3 bg-white dark:bg-zinc-900 rounded-xl border border-zinc-100 dark:border-zinc-800 shadow-sm">
                                     <div className="flex flex-col flex-1">
-                                        <span className="font-medium text-zinc-900 dark:text-zinc-100">{item.name_tr}</span>
-                                        <span className="text-xs text-zinc-500">{item.estimated_grams}g porsiyon</span>
+                                        <span className="font-medium text-zinc-900 dark:text-zinc-100">{item.food_name}</span>
+                                        <span className="text-xs text-zinc-500">{item.portion_grams}g porsiyon</span>
                                     </div>
                                     <div className="flex items-center gap-4">
                                         <span className="font-mono font-medium text-emerald-600 dark:text-emerald-400">
-                                            {item.calories_total} <span className="text-xs text-zinc-400">kcal</span>
+                                            {item.calories} <span className="text-xs text-zinc-400">kcal</span>
                                         </span>
-                                        <button onClick={() => deleteMeal(item.meal_id)} className="p-1 text-zinc-300 hover:text-red-500 bg-zinc-50 dark:bg-zinc-800 rounded-md">
+                                        <button onClick={() => deleteMeal(item.id)} className="p-1 text-zinc-300 hover:text-red-500 bg-zinc-50 dark:bg-zinc-800 rounded-md">
                                             <Trash2 className="size-4" />
                                         </button>
                                     </div>

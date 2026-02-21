@@ -62,9 +62,13 @@ export default function ScanResult() {
         setIsSaving(true);
 
         try {
+            const mappedMealType = mealType === 'kahvalti' ? 'breakfast' :
+                mealType === 'ogle' ? 'lunch' :
+                    mealType === 'aksam' ? 'dinner' : 'snack';
+
             const mealDataRows = foods.map(food => ({
                 user_id: user.id,
-                meal_type: mealType,
+                meal_type: mappedMealType,
                 food_name: food.name_tr,
                 food_name_en: food.name_en,
                 portion_grams: food.estimated_grams,

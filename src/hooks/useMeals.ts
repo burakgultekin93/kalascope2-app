@@ -1,17 +1,19 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from './useAuth';
-import type { DetectedFood } from '@/types/food';
 
 export interface MealRecord {
     id: string;
+    food_name: string;
+    food_name_en?: string;
+    portion_grams: number;
+    calories: number;
+    protein: number;
+    carbs: number;
+    fat: number;
     meal_type: string;
-    foods: DetectedFood[];
-    total_calories: number;
-    total_protein: number;
-    total_carbs: number;
-    total_fat: number;
-    logged_at: string;
+    logged_date: string;
+    created_at: string;
 }
 
 export const useMeals = (dateStr?: string) => {
@@ -32,19 +34,14 @@ export const useMeals = (dateStr?: string) => {
         if (!user) return;
         setLoading(true);
         try {
-            const startOfDay = new Date(targetDate);
-            startOfDay.setHours(0, 0, 0, 0);
-
-            const endOfDay = new Date(targetDate);
-            endOfDay.setHours(23, 59, 59, 999);
+            const targetDateStr = targetDate.split('T')[0];
 
             const { data, error } = await supabase
                 .from('meals')
                 .select('*')
                 .eq('user_id', user.id)
-                .gte('logged_at', startOfDay.toISOString())
-                .lte('logged_at', endOfDay.toISOString())
-                .order('logged_at', { ascending: false });
+                .eq('logged_date', targetDateStr)
+                .order('created_at', { ascending: false });
 
             if (error) throw error;
             setMeals(data || []);
@@ -67,10 +64,10 @@ export const useMeals = (dateStr?: string) => {
     };
 
     const dailyTotals = meals.reduce((acc, curr) => ({
-        calories: acc.calories + curr.total_calories,
-        protein: acc.protein + curr.total_protein,
-        carbs: acc.carbs + curr.total_carbs,
-        fat: acc.fat + curr.total_fat,
+        calories: acc.calories + (curr.calories || 0),
+        protein: acc.protein + (curr.protein || 0),
+        carbs: acc.carbs + (curr.carbs || 0),
+        fat: acc.fat + (curr.fat || 0),
     }), { calories: 0, protein: 0, carbs: 0, fat: 0 });
 
     return { meals, dailyTotals, loading, fetchMeals, deleteMeal };
