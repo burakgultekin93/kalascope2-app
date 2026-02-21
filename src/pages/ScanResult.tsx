@@ -56,18 +56,22 @@ export default function ScanResult() {
         setIsSaving(true);
 
         try {
-            const mealData = {
+            const mealDataRows = foods.map(food => ({
                 user_id: user.id,
                 meal_type: mealType,
-                foods: foods,
-                total_calories: totals.calories,
-                total_protein: totals.protein,
-                total_carbs: totals.carbs,
-                total_fat: totals.fat,
-                logged_at: new Date().toISOString()
-            };
+                food_name: food.name_tr,
+                food_name_en: food.name_en,
+                portion_grams: food.estimated_grams,
+                calories: food.calories_total,
+                protein: food.protein_total,
+                carbs: food.carbs_total,
+                fat: food.fat_total,
+                fiber: food.fiber_per_100g ? Number(((food.fiber_per_100g * food.estimated_grams) / 100).toFixed(1)) : 0,
+                ai_confidence: food.confidence,
+                logged_date: new Date().toISOString().split('T')[0] // Use current date for 'logged_date' type DATE
+            }));
 
-            const { error } = await supabase.from('meals').insert([mealData]);
+            const { error } = await supabase.from('meals').insert(mealDataRows);
 
             if (error) throw error;
 
