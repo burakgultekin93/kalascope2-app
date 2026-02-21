@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Trash2, RefreshCcw, Check, Search, Loader2 } from 'lucide-react';
+import { ArrowLeft, Trash2, RefreshCcw, Check, Search, Loader2, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import type { DetectedFood } from '@/types/food';
@@ -9,6 +9,7 @@ import { useLocation } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/hooks/useAuth';
 import { FoodSearchModal } from '@/components/scan/FoodSearchModal';
+import { ManualFoodAddModal } from '@/components/scan/ManualFoodAddModal';
 import { toast } from 'sonner';
 
 export default function ScanResult() {
@@ -209,11 +210,19 @@ export default function ScanResult() {
                     ))}
                 </AnimatePresence>
 
-                <FoodSearchModal onAdd={handleAddFood}>
-                    <Button variant="outline" className="w-full h-14 border-dashed rounded-2xl border-2 hover:bg-zinc-100 dark:hover:bg-zinc-800">
-                        <Search className="mr-2 size-5" /> Yemek Ara & Ekle
-                    </Button>
-                </FoodSearchModal>
+                <div className="grid grid-cols-2 gap-3">
+                    <FoodSearchModal onAdd={handleAddFood}>
+                        <Button variant="outline" className="w-full h-14 border-dashed rounded-2xl border-2 hover:bg-zinc-100 dark:hover:bg-zinc-800">
+                            <Search className="mr-2 size-5" /> Yemek Ara
+                        </Button>
+                    </FoodSearchModal>
+
+                    <ManualFoodAddModal onAdd={handleAddFood}>
+                        <Button variant="outline" className="w-full h-14 border-dashed rounded-2xl border-2 bg-emerald-50 text-emerald-600 border-emerald-200 hover:bg-emerald-100 dark:bg-emerald-950/30 dark:border-emerald-900/50 dark:text-emerald-500 hover:text-emerald-700 dark:hover:text-emerald-400">
+                            <Plus className="mr-2 size-5" /> Kendi Yemeğini Ekle
+                        </Button>
+                    </ManualFoodAddModal>
+                </div>
             </main>
 
             {/* Fixed Bottom Action Bar */}

@@ -30,22 +30,32 @@ export const FoodSearchModal = ({ onAdd, children }: FoodSearchModalProps) => {
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
+        if (!open) return;
+
         const search = async () => {
-            if (query.length < 2) {
-                setResults([]);
-                return;
-            }
             setLoading(true);
             try {
-                // Fuzzy search using ILIKE for quick lookup
-                const { data, error } = await supabase
-                    .from('food_items')
-                    .select('*')
-                    .ilike('name_tr', `%${query}%`)
-                    .limit(10);
+                if (query.length < 2) {
+                    // Fetch recent items as suggestions
+                    const { data, error } = await supabase
+                        .from('food_items')
+                        .select('*')
+                        .order('created_at', { ascending: false })
+                        .limit(10);
 
-                if (error) throw error;
-                setResults(data || []);
+                    if (error) throw error;
+                    setResults(data || []);
+                } else {
+                    // Fuzzy search using ILIKE for quick lookup
+                    const { data, error } = await supabase
+                        .from('food_items')
+                        .select('*')
+                        .ilike('name_tr', `%${query}%`)
+                        .limit(10);
+
+                    if (error) throw error;
+                    setResults(data || []);
+                }
             } catch (error) {
                 console.error('Arama hatası:', error);
             } finally {
@@ -55,7 +65,7 @@ export const FoodSearchModal = ({ onAdd, children }: FoodSearchModalProps) => {
 
         const timeoutId = setTimeout(search, 300);
         return () => clearTimeout(timeoutId);
-    }, [query]);
+    }, [query, open]);
 
     const handleSelect = (item: FoodItem) => {
         const newFood: DetectedFood = {
@@ -103,8 +113,12 @@ export const FoodSearchModal = ({ onAdd, children }: FoodSearchModalProps) => {
                 <div className="mt-4 max-h-[60vh] overflow-y-auto space-y-2">
                     {loading && <div className="flex justify-center py-4"><Loader2 className="animate-spin text-zinc-500" /></div>}
 
+                    {!loading && query.length < 2 && results.length > 0 && (
+                        <div className="text-xs font-bold text-zinc-500 mb-2 mt-4 uppercase tracking-wider px-2">Önerilenler & Kalori Listesi</div>
+                    )}
+
                     {!loading && query.length >= 2 && results.length === 0 && (
-                        <div className="text-center py-8 text-zinc-500">Sonuç bulunamadı</div>
+                        <div className="text-center py-8 text-zinc-500">Sonuç bulunamadı. Lütfen "Kendi Yemeğini Ekle" butonunu kullanın.</div>
                     )}
 
                     {!loading && results.map(item => (
