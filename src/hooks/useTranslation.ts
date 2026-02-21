@@ -67,6 +67,21 @@ const translations: Translations = {
     'plan_pro_feat_3': { tr: 'AI Diyet Asistanı', en: 'AI Diet Assistant' },
     'plan_pro_cta': { tr: '7 Gün Ücretsiz Dene', en: 'Start 7-Day Free Trial' },
 
+    // Diet Status
+    'diet_status_ketogenic': { tr: 'Ketojenik Mod Aktif', en: 'Keto Mode Active' },
+    'diet_status_diabetic': { tr: 'Diyabetik Mod Aktif', en: 'Diabetic Mode Active' },
+    'diet_status_high_protein': { tr: 'Yüksek Protein Modu', en: 'High Protein Mode' },
+    'diet_status_mediterranean': { tr: 'Akdeniz Diyeti Modu', en: 'Mediterranean Mode' },
+    'diet_status_vegan': { tr: 'Vegan Mod Aktif', en: 'Vegan Mode Active' },
+    'diet_status_vegetarian': { tr: 'Vejetaryen Mod Aktif', en: 'Vegetarian Mode Active' },
+    'diet_status_standard': { tr: 'Standart Mod', en: 'Standard Mode' },
+
+    // AI Diet AI
+    'ai_diet_warning_sugar': { tr: 'Şeker Uyarısı: Günlük limitinizi aşmak üzeresiniz. Diyabetik kontrolünüzü aksatmayın.', en: 'Sugar Warning: You are about to exceed your daily limit. Watch your diabetic control.' },
+    'ai_diet_warning_keto': { tr: 'Keto Uyarısı: Karbonhidrat alımınız yüksek. Ketozis durumundan çıkabilirsiniz.', en: 'Keto Warning: Your carb intake is high. You might fall out of ketosis.' },
+    'ai_diet_tip_protein': { tr: 'Kas Gelişimi: Hedefine ulaşmak için bugün biraz daha protein alabilirsin.', en: 'Muscle Gain: You can have some more protein to reach your goal today.' },
+    'ai_diet_tip_standard': { tr: 'Dengeli Beslenme: Bugün harika gidiyorsun! Su içmeyi unutma.', en: 'Balanced Nutrition: You are doing great today! Don\'t forget to drink water.' },
+
     // Footer
     'footer_desc': { tr: 'Dünya mutfağını anlayan akıllı beslenme asistanınız.', en: 'Your smart nutrition assistant who understands world cuisine.' },
     'footer_rights': { tr: 'Tüm hakları saklıdır.', en: 'All rights reserved.' }
