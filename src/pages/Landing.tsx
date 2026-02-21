@@ -1,17 +1,21 @@
 import { motion } from 'framer-motion';
-import { Camera, SlidersHorizontal, Mic, BarChart3, Trophy, ArrowRight, CheckCircle2, ShieldCheck, Utensils } from 'lucide-react';
+import { ArrowRight, CheckCircle2, ShieldCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Logo, IconSlider, IconMic, IconStats, IconStreak, IconPlate } from '@/components/brand';
+import { useTranslation } from '@/hooks/useTranslation';
 
 export default function Landing() {
+    const { t } = useTranslation();
+
     const features = [
-        { icon: <Camera />, title: "Fotoğraf Çek, Sonucu Gör", desc: "Sadece tabağının fotoğrafını çek, AI kalorisini çıkarsın." },
-        { icon: <SlidersHorizontal />, title: "Anında Düzelt", desc: "Porsiyon yanlış mı? Magic slider ile saniyeler içinde düzelt." },
-        { icon: <Mic />, title: "Sesle Söyle", desc: "Fotoğraf çekemiyorsan 'Yarım lahmacun yedim' demen yeterli." },
-        { icon: <Utensils />, title: "Türk Mutfağı Uzmanı", desc: "Karnıyarıktan baklavaya, 500+ yöresel yemeğimizi tanır." },
-        { icon: <BarChart3 />, title: "Trendlerini Takip Et", desc: "Kilo ve kalori hedeflerini haftalık raporlarla gör." },
-        { icon: <Trophy />, title: "Hedefine Ulaş", desc: "Gamification ve streak sistemiyle motivasyonunu yüksek tut." },
+        { icon: <Logo size={24} variant="light" />, title: t('feat_1_title'), desc: t('feat_1_desc') },
+        { icon: <IconSlider size={24} />, title: t('feat_2_title'), desc: t('feat_2_desc') },
+        { icon: <IconMic size={24} />, title: t('feat_3_title'), desc: t('feat_3_desc') },
+        { icon: <IconPlate size={24} />, title: t('feat_4_title'), desc: t('feat_4_desc') },
+        { icon: <IconStats size={24} />, title: t('feat_5_title'), desc: t('feat_5_desc') },
+        { icon: <IconStreak size={24} />, title: t('feat_6_title'), desc: t('feat_6_desc') },
     ];
 
     return (
@@ -20,18 +24,17 @@ export default function Landing() {
             <nav className="fixed top-0 w-full z-50 border-b border-zinc-200 dark:border-zinc-800 bg-white/70 dark:bg-zinc-950/70 backdrop-blur-xl">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                        <div className="size-8 rounded-lg bg-emerald-500 flex items-center justify-center">
-                            <Camera className="text-white size-5" />
-                        </div>
-                        <span className="font-bold text-xl tracking-tight">KaloScope</span>
+                        <Logo size={36} variant="light" className="dark:hidden" />
+                        <Logo size={36} variant="dark" className="hidden dark:block" />
+                        <span className="font-bold text-2xl tracking-tight hidden sm:block">KaloScope</span>
                     </div>
                     <div className="flex items-center gap-4">
-                        <Link to="/login" className="text-sm font-medium hover:text-emerald-500 transition-colors">
-                            Giriş
+                        <Link to="/login" className="text-sm font-semibold hover:text-emerald-500 transition-colors">
+                            {t('nav_login')}
                         </Link>
                         <Link to="/register">
-                            <Button className="bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl shadow-lg shadow-emerald-500/20">
-                                Ücretsiz Başla
+                            <Button className="bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl shadow-lg shadow-emerald-500/20 font-bold px-6">
+                                {t('nav_start_free')}
                             </Button>
                         </Link>
                     </div>
@@ -45,25 +48,23 @@ export default function Landing() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5 }}
-                        className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-sm font-medium mb-8 border border-emerald-500/20"
+                        className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-sm font-bold mb-8 border border-emerald-500/20 shadow-sm"
                     >
-                        <span className="relative flex h-2 w-2">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                        </span>
-                        KaloScope v1.0 Yayında
+                        <Logo size={18} variant="light" className="dark:hidden" />
+                        <Logo size={18} variant="dark" className="hidden dark:block" />
+                        {t('hero_badge')}
                     </motion.div>
 
                     <motion.h1
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.1 }}
-                        className="text-5xl md:text-7xl font-extrabold tracking-tight mb-6"
+                        className="text-5xl md:text-8xl font-black tracking-tight mb-8 leading-[1.1]"
                         style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
                     >
-                        Fotoğrafını Çek.<br />
+                        {t('hero_title_1')}<br />
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-600">
-                            Kalorisini Bil.
+                            {t('hero_title_2')}
                         </span>
                     </motion.h1>
 
@@ -71,20 +72,20 @@ export default function Landing() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.2 }}
-                        className="text-lg md:text-xl text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto mb-10"
+                        className="text-xl md:text-2xl text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto mb-12 font-medium"
                     >
-                        Türk mutfağını anlayan yapay zeka ile yediklerini saniyeler içinde analiz et. Can sıkıcı diyet listelerine son.
+                        {t('hero_desc')}
                     </motion.p>
 
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.3 }}
-                        className="flex flex-col sm:flex-row items-center justify-center gap-4"
+                        className="flex flex-col sm:flex-row items-center justify-center gap-6"
                     >
                         <Link to="/register" className="w-full sm:w-auto">
-                            <Button size="lg" className="w-full sm:w-auto h-14 px-8 text-base bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl shadow-xl shadow-emerald-500/25">
-                                Ücretsiz Başla <ArrowRight className="ml-2 size-5" />
+                            <Button size="lg" className="w-full sm:w-auto h-16 px-10 text-lg bg-emerald-500 hover:bg-emerald-600 text-white rounded-2xl shadow-2xl shadow-emerald-500/30 font-bold transition-transform active:scale-95">
+                                {t('hero_cta')} <ArrowRight className="ml-2 size-6" />
                             </Button>
                         </Link>
                     </motion.div>
@@ -94,39 +95,39 @@ export default function Landing() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.5, delay: 0.5 }}
-                        className="mt-12 flex flex-wrap justify-center gap-x-8 gap-y-4 text-sm font-medium text-zinc-500 dark:text-zinc-400"
+                        className="mt-16 flex flex-wrap justify-center gap-x-12 gap-y-6 text-sm font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest"
                     >
-                        <span className="flex items-center gap-2"><Utensils className="size-4 text-amber-500" /> 500+ Türk Yemeği</span>
-                        <span className="flex items-center gap-2"><div className="text-amber-500">⚡</div> 3 Saniye Analiz Hızı</span>
-                        <span className="flex items-center gap-2"><ShieldCheck className="size-4 text-emerald-500" /> Gizli Ücret Yok</span>
+                        <span className="flex items-center gap-2"><IconPlate size={18} className="text-amber-500" /> {t('trust_foods')}</span>
+                        <span className="flex items-center gap-2"><div className="text-amber-500 text-lg">⚡</div> {t('trust_speed')}</span>
+                        <span className="flex items-center gap-2"><ShieldCheck className="size-5 text-emerald-500" /> {t('trust_security')}</span>
                     </motion.div>
                 </section>
 
                 {/* User Flow Mockup */}
-                <section className="max-w-4xl mx-auto px-4 mb-24">
+                <section className="max-w-5xl mx-auto px-4 mb-32">
                     <motion.div
                         initial={{ opacity: 0, scale: 0.95 }}
                         whileInView={{ opacity: 1, scale: 1 }}
                         viewport={{ once: true }}
-                        className="aspect-[16/9] md:aspect-[21/9] rounded-2xl md:rounded-[2rem] bg-zinc-900 border border-zinc-800 shadow-2xl overflow-hidden relative"
+                        className="aspect-[16/9] md:aspect-[21/9] rounded-[2.5rem] bg-zinc-900 border border-zinc-800 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] overflow-hidden relative"
                     >
-                        <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/10 via-transparent to-transparent z-0" />
-                        <div className="relative z-10 flex flex-col md:flex-row h-full items-center justify-center gap-8 p-8">
-                            <div className="bg-zinc-800 p-4 rounded-xl border border-zinc-700 shadow-xl transform -rotate-6">
-                                <Camera className="size-12 text-zinc-400" />
+                        <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/20 via-transparent to-transparent z-0" />
+                        <div className="relative z-10 flex flex-col md:flex-row h-full items-center justify-center gap-12 p-12">
+                            <div className="bg-zinc-800 p-6 rounded-2xl border border-zinc-700 shadow-2xl transform -rotate-12 active:rotate-0 transition-transform cursor-pointer">
+                                <Logo size={48} variant="dark" />
                             </div>
-                            <ArrowRight className="size-8 text-emerald-500 hidden md:block" />
-                            <div className="bg-zinc-800 p-4 rounded-xl border border-zinc-700 shadow-xl animate-pulse">
-                                <div className="text-emerald-400 font-mono text-xl">🚀 Analiz...</div>
+                            <ArrowRight className="size-10 text-emerald-500 hidden md:block" />
+                            <div className="bg-zinc-800 p-6 rounded-2xl border border-emerald-500/50 shadow-[0_0_30px_rgba(16,185,129,0.2)] animate-pulse">
+                                <div className="text-emerald-400 font-mono text-2xl font-bold tracking-tighter uppercase">🚀 Analyzing...</div>
                             </div>
-                            <ArrowRight className="size-8 text-emerald-500 hidden md:block" />
-                            <div className="bg-zinc-800 p-6 rounded-xl border border-zinc-700 shadow-xl transform rotate-3">
-                                <div className="flex justify-between items-center gap-4">
-                                    <span className="font-bold text-white">İskender Kebap</span>
-                                    <span className="text-emerald-400 font-mono font-bold">850 kcal</span>
+                            <ArrowRight className="size-10 text-emerald-500 hidden md:block" />
+                            <div className="bg-zinc-800 p-8 rounded-2xl border border-zinc-700 shadow-2xl transform rotate-6 hover:rotate-0 transition-transform cursor-pointer">
+                                <div className="flex justify-between items-center gap-6">
+                                    <span className="font-black text-2xl text-white">Margherita Pizza</span>
+                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-500 font-mono font-black text-2xl">720 kcal</span>
                                 </div>
-                                <div className="mt-4 h-2 bg-zinc-700 rounded-full w-48 overflow-hidden">
-                                    <div className="bg-emerald-500 h-full w-[70%]" />
+                                <div className="mt-6 h-3 bg-zinc-700 rounded-full w-64 overflow-hidden">
+                                    <div className="bg-emerald-500 h-full w-[65%] rounded-full shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
                                 </div>
                             </div>
                         </div>
@@ -134,13 +135,13 @@ export default function Landing() {
                 </section>
 
                 {/* Features Bento */}
-                <section className="max-w-7xl mx-auto px-4 py-16">
-                    <div className="text-center mb-16">
-                        <h2 className="text-3xl md:text-4xl font-bold mb-4">Neden KaloScope?</h2>
-                        <p className="text-zinc-500 dark:text-zinc-400">Piyasadaki en yetenekli yemek analiz ve kalori takip aracı.</p>
+                <section className="max-w-7xl mx-auto px-4 py-20 pb-32">
+                    <div className="text-center mb-20">
+                        <h2 className="text-4xl md:text-6xl font-black mb-6 tracking-tight">{t('feat_title')}</h2>
+                        <p className="text-xl text-zinc-500 dark:text-zinc-400 font-medium max-w-2xl mx-auto">{t('feat_desc')}</p>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {features.map((feature, i) => (
                             <motion.div
                                 key={i}
@@ -149,13 +150,13 @@ export default function Landing() {
                                 viewport={{ once: true }}
                                 transition={{ delay: i * 0.1 }}
                             >
-                                <Card className="h-full border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-sm hover:shadow-md transition-shadow">
-                                    <CardContent className="p-6 flex flex-col items-start text-left h-full">
-                                        <div className="size-12 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center mb-4">
+                                <Card className="h-full border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xl hover:shadow-2xl transition-all hover:-translate-y-2 rounded-[2rem] overflow-hidden group">
+                                    <CardContent className="p-10 flex flex-col items-start text-left h-full">
+                                        <div className="size-16 rounded-2xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center mb-8 group-hover:bg-emerald-500 group-hover:text-white transition-colors duration-500">
                                             {feature.icon}
                                         </div>
-                                        <h3 className="text-lg font-bold mb-2">{feature.title}</h3>
-                                        <p className="text-zinc-500 dark:text-zinc-400 flex-1">{feature.desc}</p>
+                                        <h3 className="text-2xl font-black mb-4 tracking-tight">{feature.title}</h3>
+                                        <p className="text-lg text-zinc-500 dark:text-zinc-400 font-medium leading-relaxed">{feature.desc}</p>
                                     </CardContent>
                                 </Card>
                             </motion.div>
@@ -164,43 +165,51 @@ export default function Landing() {
                 </section>
 
                 {/* Pricing */}
-                <section className="max-w-5xl mx-auto px-4 py-24">
-                    <div className="text-center mb-16">
-                        <h2 className="text-3xl md:text-4xl font-bold mb-4">Şeffaf Fiyatlandırma</h2>
-                        <p className="text-zinc-500 dark:text-zinc-400">Sürpriz yok, gizli ücret yok. Kullanıcı dostu planlar.</p>
+                <section className="max-w-5xl mx-auto px-4 py-32 bg-emerald-500/5 rounded-[4rem] border border-emerald-500/10 mb-20">
+                    <div className="text-center mb-20">
+                        <h2 className="text-4xl md:text-6xl font-black mb-6 tracking-tight">{t('pricing_title')}</h2>
+                        <p className="text-xl text-zinc-500 dark:text-zinc-400 font-medium">{t('pricing_desc')}</p>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center max-w-4xl mx-auto">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center max-w-4xl mx-auto">
                         {/* Free */}
-                        <Card className="border-zinc-200 dark:border-zinc-800">
-                            <CardContent className="p-8">
-                                <h3 className="text-2xl font-bold mb-2">Başlangıç</h3>
-                                <div className="text-4xl font-extrabold mb-6">Ücretsiz</div>
-                                <ul className="space-y-4 mb-8">
-                                    <li className="flex items-center gap-3"><CheckCircle2 className="size-5 text-emerald-500" /> Günde 3 AI Tarama</li>
-                                    <li className="flex items-center gap-3"><CheckCircle2 className="size-5 text-emerald-500" /> Temel Kalori Takibi</li>
-                                    <li className="flex items-center gap-3"><CheckCircle2 className="size-5 text-emerald-500" /> Manuel Yemek Ekleme</li>
+                        <Card className="border-zinc-200 dark:border-zinc-800 rounded-[3rem] p-4 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-sm shadow-sm transition-all hover:shadow-md">
+                            <CardContent className="p-10 text-center">
+                                <h3 className="text-2xl font-bold mb-4 text-zinc-500 capitalize">{t('plan_free_title')}</h3>
+                                <div className="text-5xl font-black mb-10 tracking-tighter">{t('plan_free_price')}</div>
+                                <ul className="space-y-6 mb-12 text-left">
+                                    <li className="flex items-center gap-4 font-medium"><CheckCircle2 className="size-6 text-emerald-500" /> {t('plan_free_feat_1')}</li>
+                                    <li className="flex items-center gap-4 font-medium"><CheckCircle2 className="size-6 text-emerald-500" /> {t('trust_foods')}</li>
+                                    <li className="flex items-center gap-4 font-medium"><CheckCircle2 className="size-6 text-emerald-500" /> {t('nav_start_free')}</li>
                                 </ul>
-                                <Link to="/register"><Button variant="outline" className="w-full h-12 rounded-xl">Hemen Başla</Button></Link>
+                                <Link to="/register" className="w-full">
+                                    <Button variant="outline" className="w-full h-16 rounded-2xl text-lg font-bold border-2 transition-all active:scale-95">
+                                        {t('plan_free_cta')}
+                                    </Button>
+                                </Link>
                             </CardContent>
                         </Card>
 
                         {/* Pro */}
-                        <Card className="border-emerald-500 shadow-xl shadow-emerald-500/10 relative overflow-hidden">
-                            <div className="absolute top-0 right-0 bg-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">
-                                EN ÇOK TERCİH EDİLEN
+                        <Card className="border-4 border-emerald-500 shadow-[0_32px_64px_-16px_rgba(16,185,129,0.3)] relative overflow-hidden rounded-[3rem] bg-zinc-900 text-white group">
+                            <div className="absolute top-0 right-10 bg-emerald-500 text-white text-xs font-black px-4 py-2 rounded-b-xl uppercase tracking-widest">
+                                POPULAR
                             </div>
-                            <CardContent className="p-8">
-                                <h3 className="text-2xl font-bold border-b border-transparent mb-2">Pro</h3>
-                                <div className="text-4xl font-extrabold mb-2">₺149<span className="text-lg text-zinc-500">.99 / ay</span></div>
-                                <p className="text-sm text-zinc-500 mb-6">veya Yıllık planda %50 indirimli</p>
-                                <ul className="space-y-4 mb-8 font-medium">
-                                    <li className="flex items-center gap-3"><CheckCircle2 className="size-5 text-emerald-500" /> Sınırsız AI Tarama</li>
-                                    <li className="flex items-center gap-3"><CheckCircle2 className="size-5 text-emerald-500" /> Gelişmiş Makro Analizi</li>
-                                    <li className="flex items-center gap-3"><CheckCircle2 className="size-5 text-emerald-500" /> AI Diyet Asistanı</li>
-                                    <li className="flex items-center gap-3"><CheckCircle2 className="size-5 text-emerald-500" /> Öncelikli Destek</li>
+                            <CardContent className="p-10 text-center">
+                                <h3 className="text-2xl font-bold mb-4 text-emerald-400 uppercase tracking-widest">Pro</h3>
+                                <div className="text-5xl font-black mb-4 tracking-tighter">{t('plan_pro_price')}</div>
+                                <p className="text-sm font-bold text-emerald-500/80 mb-10 bg-emerald-500/10 inline-block px-4 py-1 rounded-full uppercase tracking-widest">{t('plan_pro_promo')}</p>
+                                <ul className="space-y-6 mb-12 text-left">
+                                    <li className="flex items-center gap-4 font-medium"><CheckCircle2 className="size-6 text-emerald-500" /> {t('plan_pro_feat_1')}</li>
+                                    <li className="flex items-center gap-4 font-medium"><CheckCircle2 className="size-6 text-emerald-500" /> {t('plan_pro_feat_2')}</li>
+                                    <li className="flex items-center gap-4 font-medium"><CheckCircle2 className="size-6 text-emerald-500" /> {t('plan_pro_feat_3')}</li>
+                                    <li className="flex items-center gap-4 font-medium"><CheckCircle2 className="size-6 text-emerald-500" /> {t('nav_start_free')}</li>
                                 </ul>
-                                <Link to="/register"><Button className="w-full h-12 bg-emerald-500 hover:bg-emerald-600 rounded-xl text-white">7 Gün Ücretsiz Dene</Button></Link>
+                                <Link to="/register?plan=pro" className="w-full">
+                                    <Button className="w-full h-16 bg-emerald-500 hover:bg-emerald-600 rounded-2xl text-white text-xl font-black shadow-lg shadow-emerald-500/20 transition-all hover:scale-[1.02] active:scale-95">
+                                        {t('plan_pro_cta')}
+                                    </Button>
+                                </Link>
                             </CardContent>
                         </Card>
                     </div>
@@ -208,16 +217,19 @@ export default function Landing() {
             </main>
 
             {/* Footer */}
-            <footer className="border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 py-12 text-center text-zinc-500">
-                <div className="flex items-center justify-center gap-2 mb-4">
-                    <Camera className="size-5 text-emerald-500" />
-                    <span className="font-bold text-lg text-zinc-900 dark:text-white">KaloScope</span>
+            <footer className="border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 py-24 text-center">
+                <div className="flex flex-col items-center gap-6 mb-12">
+                    <div className="flex items-center justify-center gap-3">
+                        <Logo size={48} variant="light" className="dark:hidden" />
+                        <Logo size={48} variant="dark" className="hidden dark:block" />
+                        <span className="font-black text-3xl tracking-tighter text-zinc-900 dark:text-white">KaloScope</span>
+                    </div>
+                    <p className="max-w-md mx-auto text-xl font-medium text-zinc-500">
+                        {t('footer_desc')}
+                    </p>
                 </div>
-                <p className="max-w-md mx-auto mb-6 text-sm">
-                    Türk mutfağını anlayan akıllı beslenme asistanınız.
-                </p>
-                <div className="text-sm">
-                    &copy; {new Date().getFullYear()} KaloScope. Tüm hakları saklıdır.
+                <div className="text-sm font-bold text-zinc-400 uppercase tracking-widest">
+                    &copy; {new Date().getFullYear()} KaloScope. {t('footer_rights')}
                 </div>
             </footer>
         </div>

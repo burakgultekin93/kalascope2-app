@@ -1,18 +1,21 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, ArrowRight, Activity, Dumbbell, Flame, CheckCircle2, User } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
 import { Card } from '@/components/ui/card';
 import { useProfile } from '@/hooks/useProfile';
 import type { UserProfileParams } from '@/utils/calories';
+import { Logo, IconPlate, IconStats, IconStreak } from '@/components/brand';
 
 export default function Onboarding() {
     const [step, setStep] = useState(1);
     const { completeOnboarding, loading } = useProfile();
     const navigate = useNavigate();
+    const location = useLocation();
+    const selectedPlan = location.state?.plan;
 
     const [formData, setFormData] = useState<UserProfileParams>({
         gender: 'male',
@@ -34,7 +37,11 @@ export default function Onboarding() {
             const goals = await completeOnboarding(formData);
             setCalculatedGoals(goals);
             setTimeout(() => {
-                navigate('/app');
+                if (selectedPlan === 'pro') {
+                    navigate('/app/paywall', { state: { fromOnboarding: true } });
+                } else {
+                    navigate('/app');
+                }
             }, 3000); // Wait 3s on result screen
         } catch (e) {
             console.error(e);
@@ -71,11 +78,11 @@ export default function Onboarding() {
                             {['male', 'female'].map(g => (
                                 <Card
                                     key={g}
-                                    className={`p-6 flex flex-col items-center justify-center gap-4 cursor-pointer transition-all border-2 ${formData.gender === g ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/20' : 'border-zinc-200 dark:border-zinc-800'}`}
+                                    className={`p-6 flex flex-col items-center justify-center gap-4 cursor-pointer transition-all border-2 rounded-2xl ${formData.gender === g ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/20' : 'border-zinc-200 dark:border-zinc-800'}`}
                                     onClick={() => setFormData({ ...formData, gender: g as any })}
                                 >
-                                    <User className={`size-8 ${formData.gender === g ? 'text-emerald-500' : 'text-zinc-400'}`} />
-                                    <span className="font-semibold capitalize">{g === 'male' ? 'Erkek' : 'Kadın'}</span>
+                                    <Logo size={32} variant={formData.gender === g ? 'light' : 'dark'} className={formData.gender === g ? '' : 'opacity-40'} />
+                                    <span className="font-bold capitalize text-lg">{g === 'male' ? 'Erkek' : 'Kadın'}</span>
                                 </Card>
                             ))}
                         </div>
@@ -106,39 +113,40 @@ export default function Onboarding() {
                     </div>
                 );
 
-            case 3:
+            case 3: {
                 const activities = [
-                    { id: 'sedentary', label: 'Masa Başı', desc: 'Çok az egzersiz veya yok', icon: <User /> },
-                    { id: 'light', label: 'Hafif Aktif', desc: 'Haftada 1-3 gün spor', icon: <Activity /> },
-                    { id: 'moderate', label: 'Orta Aktif', desc: 'Haftada 3-5 gün spor', icon: <Flame /> },
-                    { id: 'active', label: 'Çok Aktif', desc: 'Haftada 6-7 gün spor', icon: <Dumbbell /> }
+                    { id: 'sedentary', label: 'Masa Başı', desc: 'Çok az egzersiz veya yok', icon: <Logo size={20} variant="light" /> },
+                    { id: 'light', label: 'Hafif Aktif', desc: 'Haftada 1-3 gün spor', icon: <IconStats size={20} /> },
+                    { id: 'moderate', label: 'Orta Aktif', desc: 'Haftada 3-5 gün spor', icon: <IconStreak size={20} /> },
+                    { id: 'active', label: 'Çok Aktif', desc: 'Haftada 6-7 gün spor', icon: <IconPlate size={20} /> }
                 ];
 
                 return (
                     <div className="space-y-4 w-full max-w-md mx-auto">
                         <div className="text-center mb-6">
-                            <h2 className="text-2xl font-bold">Aktivite Seviyeniz</h2>
-                            <p className="text-zinc-500 text-sm mt-2">Günlük harcadığınız enerjiyi bulalım</p>
+                            <h2 className="text-2xl font-bold uppercase tracking-tight">Aktivite Seviyeniz</h2>
+                            <p className="text-zinc-500 text-sm mt-2 font-medium">Günlük harcadığınız enerjiyi bulalım</p>
                         </div>
                         <div className="grid gap-3 flex-col">
                             {activities.map(act => (
                                 <Card
                                     key={act.id}
-                                    className={`p-4 flex items-center gap-4 cursor-pointer transition-all border-2 ${formData.activity_level === act.id ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/20' : 'border-zinc-200 dark:border-zinc-800'}`}
+                                    className={`p-5 flex items-center gap-5 cursor-pointer transition-all border-2 rounded-[1.5rem] ${formData.activity_level === act.id ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/20' : 'border-zinc-200 dark:border-zinc-800'}`}
                                     onClick={() => setFormData({ ...formData, activity_level: act.id as any })}
                                 >
-                                    <div className={`p-2 rounded-lg ${formData.activity_level === act.id ? 'bg-emerald-100 dark:bg-emerald-900 text-emerald-600 dark:text-emerald-400' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500'}`}>
+                                    <div className={`p-3 rounded-xl ${formData.activity_level === act.id ? 'bg-emerald-100 dark:bg-emerald-900 text-emerald-600 dark:text-emerald-400' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500'}`}>
                                         {act.icon}
                                     </div>
                                     <div>
-                                        <h4 className="font-semibold">{act.label}</h4>
-                                        <p className="text-xs text-zinc-500">{act.desc}</p>
+                                        <h4 className="font-bold text-lg leading-tight">{act.label}</h4>
+                                        <p className="text-xs text-zinc-500 font-medium">{act.desc}</p>
                                     </div>
                                 </Card>
                             ))}
                         </div>
                     </div>
                 );
+            }
 
             case 4:
                 return (

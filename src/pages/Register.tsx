@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Camera, Loader2, ArrowLeft } from 'lucide-react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Loader2, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { getAuthErrorMessage } from '@/utils/authErrors';
 import { supabase } from '@/lib/supabase';
+import { Logo } from '@/components/brand';
 
 export default function Register() {
     const [fullName, setFullName] = useState('');
@@ -14,6 +15,8 @@ export default function Register() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const selectedPlan = searchParams.get('plan');
 
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -32,8 +35,8 @@ export default function Register() {
             });
 
             if (error) throw error;
-            navigate('/onboarding');
-        } catch (err: any) {
+            navigate('/onboarding', { state: { plan: selectedPlan } });
+        } catch (err: unknown) {
             setError(getAuthErrorMessage(err));
         } finally {
             setLoading(false);
@@ -52,9 +55,9 @@ export default function Register() {
             {/* Right Cover */}
             <div className="hidden md:flex flex-1 flex-col justify-center items-center bg-zinc-900 relative overflow-hidden p-12 text-center">
                 <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/20 to-transparent" />
-                <Camera className="size-20 text-emerald-500 mb-8 z-10" />
+                <Logo size={120} variant="dark" className="mb-8 z-10" />
                 <h2 className="text-4xl font-bold text-white mb-4 z-10 font-[Plus_Jakarta_Sans]">Yolculuğun Başlıyor</h2>
-                <p className="text-emerald-50 max-w-sm z-10">
+                <p className="text-emerald-50 max-w-sm z-10 font-medium">
                     İlk taramanla birlikte hedeflerine bir adım daha yaklaşacaksın.
                 </p>
             </div>
