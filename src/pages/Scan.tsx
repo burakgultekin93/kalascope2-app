@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Camera, Image as ImageIcon, ScanLine } from 'lucide-react';
+import { Camera, Image as ImageIcon, ScanLine, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 import { optimizeImage } from '@/utils/imageOptimizer';
@@ -132,6 +132,15 @@ export default function Scan() {
                                     onClick={() => fileInputRef.current?.click()}
                                 >
                                     <ImageIcon className="mr-2 size-5 text-emerald-400" /> Galeriden Seç
+                                </Button>
+
+                                <Button
+                                    variant="outline"
+                                    size="lg"
+                                    className="w-full h-14 rounded-2xl border-emerald-900/50 bg-emerald-950/30 hover:bg-emerald-900/50 text-emerald-500"
+                                    onClick={() => navigate('/app/scan-result', { state: { result: { foods: [] }, isManual: true } })}
+                                >
+                                    <Search className="mr-2 size-5" /> Manuel Arama & Ekleme
                                 </Button>
 
                                 <input

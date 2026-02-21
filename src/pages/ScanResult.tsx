@@ -19,16 +19,16 @@ export default function ScanResult() {
     const [mealType, setMealType] = useState('ogle');
     const [isSaving, setIsSaving] = useState(false);
 
-    // Initial state from analysis
     const initialFoods = location.state?.result?.foods || [];
+    const isManualMode = location.state?.isManual === true;
     const [foods, setFoods] = useState<DetectedFood[]>(initialFoods.length > 0 ? initialFoods : []);
 
-    // If suddenly navigating here without data
+    // If suddenly navigating here without data AND not explicitly requesting manual mode
     useMemo(() => {
-        if (!location.state?.result && foods.length === 0) {
+        if (!location.state?.result && !isManualMode && foods.length === 0) {
             navigate('/app/scan');
         }
-    }, [location.state, navigate, foods.length]);
+    }, [location.state, navigate, foods.length, isManualMode]);
 
     const removeFood = (id: string) => {
         setFoods(foods.filter(f => f.id !== id));
@@ -132,11 +132,18 @@ export default function ScanResult() {
                 <button onClick={() => navigate(-1)} className="p-2 -ml-2 rounded-full hover:bg-zinc-200 dark:hover:bg-zinc-800">
                     <ArrowLeft className="size-6" />
                 </button>
-                <h1 className="text-xl font-bold">Analiz Sonucu</h1>
+                <h1 className="text-xl font-bold">{isManualMode ? 'Öğün Oluştur' : 'Analiz Sonucu'}</h1>
                 <div className="w-10" />
             </header>
 
             <main className="flex-1 px-4 py-6 space-y-6">
+
+                {foods.length === 0 && (
+                    <div className="flex flex-col items-center justify-center py-16 bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200 dark:border-zinc-800 border-dashed text-zinc-500">
+                        <Search className="size-12 mb-4 opacity-50 text-emerald-500" />
+                        <p className="font-medium text-sm text-center px-8">Listeniz şu an boş.<br />Aşağıdaki butonları kullanarak yemeğinizi aratabilir veya tamamen kendi besininizi oluşturabilirsiniz.</p>
+                    </div>
+                )}
 
                 <AnimatePresence>
                     {foods.map((food, i) => (
