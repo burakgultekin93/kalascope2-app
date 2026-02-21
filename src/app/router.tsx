@@ -1,0 +1,71 @@
+import { createBrowserRouter } from 'react-router-dom';
+import { AppShell } from '@/components/layout/AppShell';
+import { ProtectedRoute } from '@/components/layout/ProtectedRoute';
+import Landing from '@/pages/Landing';
+import Login from '@/pages/Login';
+import Register from '@/pages/Register';
+import Onboarding from '@/pages/Onboarding';
+import Dashboard from '@/pages/Dashboard';
+import Scan from '@/pages/Scan';
+import ScanResult from '@/pages/ScanResult';
+import Diary from '@/pages/Diary';
+import Stats from '@/pages/Stats';
+import Profile from '@/pages/Profile';
+import Paywall from '@/pages/Paywall';
+
+export const router = createBrowserRouter([
+    {
+        path: '/',
+        element: <Landing />,
+    },
+    {
+        path: '/login',
+        element: <Login />,
+    },
+    {
+        path: '/register',
+        element: <Register />,
+    },
+    {
+        path: '/onboarding',
+        element: <Onboarding />,
+    },
+    {
+        path: '/app',
+        element: (
+            <ProtectedRoute>
+                <AppShell />
+            </ProtectedRoute>
+        ),
+        children: [
+            {
+                index: true,
+                element: <Dashboard />,
+            },
+            {
+                path: 'scan',
+                element: <Scan />,
+            },
+            {
+                path: 'scan-result',
+                element: <ScanResult />,
+            },
+            {
+                path: 'diary',
+                element: <Diary />,
+            },
+            {
+                path: 'stats',
+                element: <Stats />,
+            },
+            {
+                path: 'profile',
+                element: <Profile />,
+            },
+            {
+                path: 'paywall',
+                element: <Paywall />,
+            },
+        ],
+    },
+]);
