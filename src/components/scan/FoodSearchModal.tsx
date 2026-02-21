@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Search, Loader2, Plus } from 'lucide-react';
+import { Search, Loader2, Plus, Sparkles } from 'lucide-react';
+import { analyzeFoodText } from '@/lib/analyzeFood';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { supabase } from '@/lib/supabase';
+import { toast } from 'sonner';
 import type { DetectedFood } from '@/types/food';
 
 interface FoodSearchModalProps {
@@ -28,6 +30,7 @@ export const FoodSearchModal = ({ onAdd, children }: FoodSearchModalProps) => {
     const [query, setQuery] = useState('');
     const [results, setResults] = useState<FoodItem[]>([]);
     const [loading, setLoading] = useState(false);
+    const [aiLoading, setAiLoading] = useState(false);
 
     useEffect(() => {
         if (!open) return;
@@ -90,6 +93,44 @@ export const FoodSearchModal = ({ onAdd, children }: FoodSearchModalProps) => {
         setQuery('');
     };
 
+    const handleAISearch = async () => {
+        if (!query || query.length < 2) return;
+        setAiLoading(true);
+        try {
+            const result = await analyzeFoodText(query);
+            if (result.foods && result.foods.length > 0) {
+                // For now, we take the first item from AI
+                const aiItem = result.foods[0];
+                const newFood: DetectedFood = {
+                    id: 'ai-' + Date.now(),
+                    name_tr: aiItem.name_tr,
+                    name_en: aiItem.name_en || aiItem.name_tr,
+                    estimated_grams: aiItem.estimated_grams,
+                    confidence: aiItem.confidence,
+                    calories_per_100g: aiItem.calories_per_100g,
+                    protein_per_100g: aiItem.protein_per_100g,
+                    carbs_per_100g: aiItem.carbs_per_100g,
+                    fat_per_100g: aiItem.fat_per_100g,
+                    fiber_per_100g: aiItem.fiber_per_100g || 0,
+                    calories_total: Math.round((aiItem.calories_per_100g * aiItem.estimated_grams) / 100),
+                    protein_total: Number(((aiItem.protein_per_100g * aiItem.estimated_grams) / 100).toFixed(1)),
+                    carbs_total: Number(((aiItem.carbs_per_100g * aiItem.estimated_grams) / 100).toFixed(1)),
+                    fat_total: Number(((aiItem.fat_per_100g * aiItem.estimated_grams) / 100).toFixed(1)),
+                };
+                onAdd(newFood);
+                setOpen(false);
+                setQuery('');
+            } else {
+                toast.error('AI yiyeceği tanımlayamadı.');
+            }
+        } catch (error) {
+            console.error('AI Search Error:', error);
+            toast.error('AI analizi sırasında bir hata oluştu.');
+        } finally {
+            setAiLoading(false);
+        }
+    };
+
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
@@ -118,7 +159,39 @@ export const FoodSearchModal = ({ onAdd, children }: FoodSearchModalProps) => {
                     )}
 
                     {!loading && query.length >= 2 && results.length === 0 && (
-                        <div className="text-center py-8 text-zinc-500">Sonuç bulunamadı. Lütfen "Kendi Yemeğini Ekle" butonunu kullanın.</div>
+                        <div className="text-center py-8 space-y-4">
+                            <div className="text-zinc-500">Sonuç bulunamadı. Lütfen "Kendi Yemeğini Ekle" butonunu kullanın veya AI ile detaylı bilgi alın.</div>
+                            <Button
+                                onClick={handleAISearch}
+                                disabled={aiLoading}
+                                className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white rounded-2xl h-12 shadow-md"
+                            >
+                                {aiLoading ? (
+                                    <Loader2 className="mr-2 size-5 animate-spin" />
+                                ) : (
+                                    <Sparkles className="mr-2 size-5" />
+                                )}
+                                AI ile Detaylı Ara: "{query}"
+                            </Button>
+                        </div>
+                    )}
+
+                    {!loading && query.length >= 2 && results.length > 0 && (
+                        <div className="px-2 mb-2">
+                            <Button
+                                onClick={handleAISearch}
+                                disabled={aiLoading}
+                                variant="outline"
+                                className="w-full border-emerald-500/30 bg-emerald-50/30 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 rounded-2xl h-12 border-dashed"
+                            >
+                                {aiLoading ? (
+                                    <Loader2 className="mr-2 size-5 animate-spin" />
+                                ) : (
+                                    <Sparkles className="mr-2 size-5" />
+                                )}
+                                Listenizde bulamadınız mı? AI ile Bul
+                            </Button>
+                        </div>
                     )}
 
                     {!loading && results.map(item => (
