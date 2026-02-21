@@ -1,21 +1,16 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from './useAuth';
 import { calculateDailyGoals } from '@/utils/calories';
 import type { UserProfileParams } from '@/utils/calories';
+import type { UserProfile } from '@/types/profile';
 
 export const useProfile = () => {
     const { user } = useAuth();
-    const [profile, setProfile] = useState<any>(null);
+    const [profile, setProfile] = useState<UserProfile | null>(null);
     const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        if (user) {
-            getProfile();
-        }
-    }, [user]);
-
-    const getProfile = async () => {
+    const getProfile = useCallback(async () => {
         if (!user) return;
         try {
             const { data, error } = await supabase
@@ -25,11 +20,15 @@ export const useProfile = () => {
                 .single();
 
             if (error) throw error;
-            setProfile(data);
+            setProfile(data as UserProfile);
         } catch (error) {
             console.error('Error fetching profile:', error);
         }
-    };
+    }, [user]);
+
+    useEffect(() => {
+        getProfile();
+    }, [getProfile]);
 
     const completeOnboarding = async (data: UserProfileParams) => {
         if (!user) return;
@@ -53,7 +52,7 @@ export const useProfile = () => {
                 .eq('id', user.id);
 
             if (error) throw error;
-            setProfile({ ...profile, ...updates });
+            setProfile(prev => prev ? { ...prev, ...updates } : null);
             return goals;
         } catch (error) {
             console.error('Error updating profile:', error);
@@ -67,8 +66,8 @@ export const useProfile = () => {
         if (!user || !profile) return;
         setLoading(true);
         try {
-            const newProfileData = { ...profile, ...updates };
-            const goals = calculateDailyGoals(newProfileData as any);
+            const newProfileData = { ...profile, ...updates } as UserProfile;
+            const goals = calculateDailyGoals(newProfileData);
 
             const finalUpdates = {
                 ...updates,
@@ -85,7 +84,7 @@ export const useProfile = () => {
                 .eq('id', user.id);
 
             if (error) throw error;
-            setProfile({ ...profile, ...finalUpdates });
+            setProfile(prev => prev ? { ...prev, ...finalUpdates } : null);
             return finalUpdates;
         } catch (error) {
             console.error('Error updating profile:', error);

@@ -1,4 +1,4 @@
-export const getAuthErrorMessage = (error: any): string => {
+export const getAuthErrorMessage = (error: { message?: string } | null): string => {
     if (!error) return 'Bilinmeyen bir hata oluştu.';
 
     const message = error.message?.toLowerCase();
@@ -7,6 +7,7 @@ export const getAuthErrorMessage = (error: any): string => {
     if (message?.includes('user already registered')) return 'Bu e-posta adresi zaten kullanımda.';
     if (message?.includes('password should be at least 6 characters')) return 'Şifre en az 6 karakter olmalıdır.';
     if (message?.includes('invalid format')) return 'Geçersiz e-posta formatı.';
+    if (message?.includes('email not confirmed')) return 'Lütfen giriş yapmadan önce e-posta adresinizi onaylayın.';
 
     return error.message || 'Bilinmeyen bir hata oluştu.';
 };

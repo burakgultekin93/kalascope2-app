@@ -3,6 +3,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useProfile } from '@/hooks/useProfile';
 import type { DietPreference } from '@/utils/calories';
 import { useTheme } from '@/app/providers';
+import { useTranslation } from '@/hooks/useTranslation';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Logo, IconProfile, IconPlate, IconBadge } from '@/components/brand';
@@ -11,6 +12,7 @@ export default function Profile() {
     const { user, signOut } = useAuth();
     const { profile, updateProfile, loading } = useProfile();
     const { theme, setTheme } = useTheme();
+    const { t } = useTranslation();
     const navigate = useNavigate();
 
     const handleSignOut = async () => {
@@ -23,13 +25,13 @@ export default function Profile() {
 
             {/* Header Profile Info */}
             <div className="pt-12 pb-8 px-6 bg-emerald-500 text-white rounded-b-[2rem] shadow-sm">
-                <h1 className="text-2xl font-bold mb-6">Profilim</h1>
+                <h1 className="text-2xl font-bold mb-6">{t('profile_title')}</h1>
                 <div className="flex items-center gap-4">
                     <div className="size-20 bg-white/20 rounded-full flex items-center justify-center border-2 border-white/40 shadow-inner">
                         <Logo size={50} variant="white" />
                     </div>
                     <div>
-                        <h2 className="text-xl font-bold">{user?.user_metadata?.full_name || 'Kullanıcı'}</h2>
+                        <h2 className="text-xl font-bold">{user?.user_metadata?.full_name || t('profile_user')}</h2>
                         <p className="text-emerald-100/80 text-sm font-medium">{user?.email}</p>
                     </div>
                 </div>
@@ -47,8 +49,8 @@ export default function Profile() {
                             <Crown className="size-5" />
                         </div>
                         <div>
-                            <h3 className="font-bold text-lg leading-tight">Pro'ya Geçiş Yap</h3>
-                            <p className="text-zinc-400 text-xs">Sınırsız tarama ve gelişmiş raporlar</p>
+                            <h3 className="font-bold text-lg leading-tight">{t('profile_pro_cta')}</h3>
+                            <p className="text-zinc-400 text-xs">{t('profile_pro_desc')}</p>
                         </div>
                     </div>
                     <ChevronRight className="text-zinc-500" />
@@ -57,10 +59,13 @@ export default function Profile() {
                 {/* Settings List */}
                 <section className="bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200 dark:border-zinc-800 overflow-hidden shadow-sm">
 
-                    <div className="flex items-center justify-between p-4 border-b border-zinc-100 dark:border-zinc-800 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
+                    <div
+                        onClick={() => navigate('/app/profile/goals')}
+                        className="flex items-center justify-between p-4 border-b border-zinc-100 dark:border-zinc-800 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
+                    >
                         <div className="flex items-center gap-3">
                             <div className="p-2 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl"><IconProfile size={18} /></div>
-                            <span className="font-medium text-sm">Hedeflerim & Vücut Ölçülerim</span>
+                            <span className="font-medium text-sm">{t('profile_targets_body')}</span>
                         </div>
                         <ChevronRight className="size-4 text-zinc-400" />
                     </div>
@@ -70,8 +75,8 @@ export default function Profile() {
                         <div className="flex items-center gap-3">
                             <div className="p-2 bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 rounded-xl"><IconPlate size={18} /></div>
                             <div className="flex flex-col">
-                                <span className="font-medium text-sm">Diyet Tercihi</span>
-                                <span className="text-xs text-zinc-500 capitalize">{profile?.diet_preference || 'Standard'}</span>
+                                <span className="font-medium text-sm">{t('profile_diet_pref')}</span>
+                                <span className="text-xs text-zinc-500 capitalize">{t(`diet_label_${profile?.diet_preference || 'standard'}`)}</span>
                             </div>
                         </div>
                         <select
@@ -80,13 +85,13 @@ export default function Profile() {
                             onChange={(e) => updateProfile({ diet_preference: e.target.value as DietPreference })}
                             disabled={loading}
                         >
-                            <option value="standard">Standart</option>
-                            <option value="ketogenic">Ketojenik (Yüksek Yağ)</option>
-                            <option value="diabetic">Diyabetik (Dengeli)</option>
-                            <option value="high_protein">Yüksek Protein</option>
-                            <option value="vegan">Vegan</option>
-                            <option value="vegetarian">Vejetaryen</option>
-                            <option value="mediterranean">Akdeniz (Pro)</option>
+                            <option value="standard">{t('diet_label_standard')}</option>
+                            <option value="ketogenic">{t('diet_label_ketogenic')}</option>
+                            <option value="diabetic">{t('diet_label_diabetic')}</option>
+                            <option value="high_protein">{t('diet_label_high_protein')}</option>
+                            <option value="vegan">{t('diet_label_vegan')}</option>
+                            <option value="vegetarian">{t('diet_label_vegetarian')}</option>
+                            <option value="mediterranean">{t('diet_label_mediterranean')}</option>
                         </select>
                         <ChevronRight className="size-4 text-zinc-400" />
                     </div>
@@ -94,7 +99,7 @@ export default function Profile() {
                     <div className="flex items-center justify-between p-4 border-b border-zinc-100 dark:border-zinc-800 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
                         <div className="flex items-center gap-3">
                             <div className="p-2 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-xl"><IconBadge size={18} /></div>
-                            <span className="font-medium text-sm">Hesap Gizliliği</span>
+                            <span className="font-medium text-sm">{t('profile_privacy')}</span>
                         </div>
                         <ChevronRight className="size-4 text-zinc-400" />
                     </div>
@@ -103,7 +108,7 @@ export default function Profile() {
                     <div className="flex items-center justify-between p-4 border-b border-zinc-100 dark:border-zinc-800 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800/50" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
                         <div className="flex items-center gap-3">
                             <div className="p-2 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-xl"><Moon className="size-4" /></div>
-                            <span className="font-medium text-sm">Karanlık Mod</span>
+                            <span className="font-medium text-sm">{t('profile_dark_mode')}</span>
                         </div>
                         <div className={`w-11 h-6 rounded-full flex items-center p-1 transition-colors ${theme === 'dark' ? 'bg-emerald-500 justify-end' : 'bg-zinc-200 justify-start'}`}>
                             <div className="bg-white size-4 rounded-full shadow-sm" />
@@ -113,7 +118,7 @@ export default function Profile() {
                 </section>
 
                 <Button onClick={handleSignOut} variant="outline" className="w-full h-14 rounded-2xl text-red-500 hover:text-red-600 hover:bg-red-50 border-red-100 dark:border-red-900 dark:hover:bg-red-950/20 font-semibold border-2 bg-white dark:bg-zinc-900">
-                    <LogOut className="mr-2 size-5" /> Çıkış Yap
+                    <LogOut className="mr-2 size-5" /> {t('profile_logout')}
                 </Button>
 
             </div>

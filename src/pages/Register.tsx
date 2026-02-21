@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Loader2, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,8 +15,6 @@ export default function Register() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const navigate = useNavigate();
-    const [searchParams] = useSearchParams();
-    const selectedPlan = searchParams.get('plan');
 
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -30,14 +28,17 @@ export default function Register() {
                 options: {
                     data: {
                         full_name: fullName,
-                    }
+                    },
+                    emailRedirectTo: import.meta.env.PROD
+                        ? 'https://kaloscope.app/auth/callback'
+                        : `${window.location.origin}/auth/callback`
                 }
             });
 
             if (error) throw error;
-            navigate('/onboarding', { state: { plan: selectedPlan } });
+            navigate('/verify-email');
         } catch (err: unknown) {
-            setError(getAuthErrorMessage(err));
+            setError(getAuthErrorMessage(err as { message?: string }));
         } finally {
             setLoading(false);
         }

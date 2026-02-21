@@ -12,6 +12,10 @@ import Diary from '@/pages/Diary';
 import Stats from '@/pages/Stats';
 import Profile from '@/pages/Profile';
 import Paywall from '@/pages/Paywall';
+import VerifyEmail from '@/pages/VerifyEmail';
+import AuthCallback from '@/pages/AuthCallback';
+import GoalsSettings from '@/pages/GoalsSettings';
+import DietList from '@/pages/DietList';
 
 export const router = createBrowserRouter([
     {
@@ -25,6 +29,14 @@ export const router = createBrowserRouter([
     {
         path: '/register',
         element: <Register />,
+    },
+    {
+        path: '/verify-email',
+        element: <VerifyEmail />,
+    },
+    {
+        path: '/auth/callback',
+        element: <AuthCallback />,
     },
     {
         path: '/onboarding',
@@ -65,6 +77,14 @@ export const router = createBrowserRouter([
             {
                 path: 'paywall',
                 element: <Paywall />,
+            },
+            {
+                path: 'profile/goals',
+                element: <GoalsSettings />,
+            },
+            {
+                path: 'diet-list',
+                element: <DietList />,
             },
         ],
     },

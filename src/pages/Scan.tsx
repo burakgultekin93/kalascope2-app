@@ -9,6 +9,7 @@ import { getBarcodeProduct } from '@/lib/openFoodFacts';
 import { BarcodeScanner } from '@/components/scan/BarcodeScanner';
 import { toast } from 'sonner';
 import { IconScan, Wordmark } from '@/components/brand';
+import { useUsageLimit } from '@/hooks/useUsageLimit';
 
 export default function Scan() {
     const [mode, setMode] = useState<'ai' | 'barcode'>('ai');
@@ -16,6 +17,7 @@ export default function Scan() {
     const [loadingMsg, setLoadingMsg] = useState('Fotoğraf işleniyor...');
     const fileInputRef = useRef<HTMLInputElement>(null);
     const navigate = useNavigate();
+    const { checkLimit, incrementUsage, current, limit, remaining } = useUsageLimit();
 
     const handleCapture = () => {
         // In a real app we'd trigger a native camera or file input.
@@ -26,6 +28,8 @@ export default function Scan() {
         const file = e.target.files?.[0];
         if (!file) return;
 
+        if (!checkLimit()) return;
+
         setAnalyzing(true);
         setLoadingMsg('Görüntü optimize ediliyor...');
 
@@ -35,6 +39,7 @@ export default function Scan() {
             setLoadingMsg('Yapay Zeka yemeğinizi inceliyor...');
             const result = await analyzeFoodImage(base64Image);
 
+            await incrementUsage();
             navigate('/app/scan-result', { state: { result } });
         } catch (error: unknown) {
             const err = error as Error;
@@ -45,6 +50,8 @@ export default function Scan() {
     };
 
     const handleBarcodeSuccess = async (decodedText: string) => {
+        if (!checkLimit()) return;
+
         setAnalyzing(true);
         setLoadingMsg('Barkod sorgulanıyor...');
 
@@ -57,6 +64,7 @@ export default function Scan() {
             }
 
             const result = { foods: [product] };
+            await incrementUsage();
             navigate('/app/scan-result', { state: { result } });
         } catch (error) {
             console.error('Barkod hatası:', error);
@@ -167,6 +175,29 @@ export default function Scan() {
                     </motion.div>
                 )}
             </AnimatePresence>
+
+            {/* Usage Counter */}
+            {!analyzing && (
+                <div className="fixed bottom-8 px-6 w-full max-w-md">
+                    <div className="bg-zinc-900/50 backdrop-blur-sm border border-zinc-800 p-4 rounded-3xl flex items-center justify-between">
+                        <div className="space-y-1">
+                            <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Günlük Limit Durumu</p>
+                            <div className="flex items-center gap-2">
+                                <span className="text-sm font-bold">{remaining} Kullanım kaldı</span>
+                                <span className="text-[10px] font-medium text-zinc-500">({current} / {limit})</span>
+                            </div>
+                        </div>
+                        <div className="flex gap-1">
+                            {[...Array(limit)].map((_, i) => (
+                                <div
+                                    key={i}
+                                    className={`h-1.5 w-3 rounded-full ${i < current ? 'bg-zinc-700' : 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]'}`}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

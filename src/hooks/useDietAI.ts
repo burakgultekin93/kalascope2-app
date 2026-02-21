@@ -2,13 +2,26 @@ import { useMemo } from 'react';
 import { useTranslation } from './useTranslation';
 import type { DietPreference } from '@/utils/calories';
 
+import type { HealthLog } from './useHealthLogs';
+
 interface DietFeedback {
     message: string;
     type: 'warning' | 'tip' | 'info';
     icon: 'sugar' | 'keto' | 'protein' | 'info';
 }
 
-export const useDietAI = (profile: any, dailyTotals: { calories: number; carbs: number; protein: number; fat: number; sugar?: number }): DietFeedback | null => {
+interface UserProfile {
+    diet_preference: string;
+    daily_carb_goal: number;
+    daily_protein_goal: number;
+    daily_calorie_goal: number;
+}
+
+export const useDietAI = (
+    profile: UserProfile,
+    dailyTotals: { calories: number; carbs: number; protein: number; fat: number; sugar?: number },
+    healthLogs: HealthLog[] = []
+): DietFeedback | null => {
     const { t } = useTranslation();
 
     return useMemo(() => {
@@ -21,7 +34,17 @@ export const useDietAI = (profile: any, dailyTotals: { calories: number; carbs: 
 
         // 1. Diabetic Logic: Sugar/Carb Warning
         if (diet === 'diabetic') {
-            const carbLimit = profile.daily_carb_goal * 0.9; // 90% of target is warning zone
+            const hasInsulin = healthLogs.some(log => log.type === 'insulin');
+            const carbLimit = profile.daily_carb_goal * 0.9;
+
+            if (carbs > carbLimit && !hasInsulin) {
+                return {
+                    message: "Yüksek karbonhidrat alımı! İnsülin dozunuzu kontrol ettiniz mi?",
+                    type: 'warning',
+                    icon: 'sugar'
+                };
+            }
+
             if (carbs > carbLimit) {
                 return {
                     message: t('ai_diet_warning_sugar'),
@@ -65,5 +88,5 @@ export const useDietAI = (profile: any, dailyTotals: { calories: number; carbs: 
         }
 
         return null;
-    }, [profile, dailyTotals, t]);
+    }, [profile, dailyTotals, healthLogs, t]);
 };

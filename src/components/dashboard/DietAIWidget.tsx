@@ -2,14 +2,27 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { AlertCircle, Lightbulb, Info, Sparkles } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { useDietAI } from '@/hooks/useDietAI';
+import type { HealthLog } from '@/hooks/useHealthLogs';
 
 interface DietAIWidgetProps {
-    profile: any;
-    dailyTotals: any;
+    profile: {
+        diet_preference: string;
+        daily_carb_goal: number;
+        daily_protein_goal: number;
+        daily_calorie_goal: number
+    };
+    dailyTotals: {
+        calories: number;
+        carbs: number;
+        protein: number;
+        fat: number;
+        sugar?: number
+    };
+    healthLogs?: HealthLog[];
 }
 
-export const DietAIWidget = ({ profile, dailyTotals }: DietAIWidgetProps) => {
-    const feedback = useDietAI(profile, dailyTotals);
+export const DietAIWidget = ({ profile, dailyTotals, healthLogs = [] }: DietAIWidgetProps) => {
+    const feedback = useDietAI(profile, dailyTotals, healthLogs);
 
     if (!feedback) return null;
 

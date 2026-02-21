@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { getAuthErrorMessage } from '@/utils/authErrors';
 import { supabase } from '@/lib/supabase';
+import { useTranslation } from '@/hooks/useTranslation';
 
 export default function Login() {
     const [email, setEmail] = useState('');
@@ -13,6 +14,7 @@ export default function Login() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -27,8 +29,13 @@ export default function Login() {
 
             if (error) throw error;
             navigate('/app');
-        } catch (err: any) {
-            setError(getAuthErrorMessage(err));
+        } catch (err: unknown) {
+            const msg = getAuthErrorMessage(err as { message?: string });
+            if (msg.includes('onaylayın')) {
+                setError(t('auth_unconfirmed_error'));
+            } else {
+                setError(msg);
+            }
         } finally {
             setLoading(false);
         }
