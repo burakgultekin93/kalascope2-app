@@ -6,7 +6,7 @@ import type { HealthLog } from '@/hooks/useHealthLogs';
 
 interface DietAIWidgetProps {
     profile: {
-        diet_preference: string;
+        diet_preference?: string;
         daily_carb_goal: number;
         daily_protein_goal: number;
         daily_calorie_goal: number

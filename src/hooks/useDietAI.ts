@@ -11,7 +11,7 @@ interface DietFeedback {
 }
 
 interface UserProfile {
-    diet_preference: string;
+    diet_preference?: string;
     daily_carb_goal: number;
     daily_protein_goal: number;
     daily_calorie_goal: number;

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CheckCircle2, Crown, ArrowLeft, CreditCard, Lock, ShieldCheck, Loader2 } from 'lucide-react';
+import { CheckCircle2, Crown, ArrowLeft, Lock, ShieldCheck, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { useNavigate, useLocation } from 'react-router-dom';

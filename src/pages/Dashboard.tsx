@@ -91,11 +91,13 @@ export default function Dashboard() {
                 </div>
 
                 {/* AI Advisor */}
-                <DietAIWidget
-                    profile={profile as UserProfile}
-                    dailyTotals={dailyTotals}
-                    healthLogs={healthLogs}
-                />
+                {profile && (
+                    <DietAIWidget
+                        profile={profile}
+                        dailyTotals={dailyTotals}
+                        healthLogs={healthLogs}
+                    />
+                )}
 
                 {/* Health Tracking (For Diabetic/Keto) */}
                 {(profile?.diet_preference === 'diabetic' || profile?.diet_preference === 'ketogenic') && (
