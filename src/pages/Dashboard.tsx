@@ -20,9 +20,9 @@ import { XPBar } from '@/components/gamification/XPBar';
 import { StreakCounter } from '@/components/gamification/StreakCounter';
 import { DietComplianceBanner } from '@/components/diet/DietComplianceBanner';
 import { AICoachCard } from '@/components/diet/AICoachCard';
-import { openai } from '@/lib/openai';
 import { getDailyAIFeedback } from '@/lib/aiCoach';
 import type { DailyData, AICoachData } from '@/lib/aiCoach';
+import { useWater } from '@/hooks/useWater';
 
 export default function Dashboard() {
     const { profile } = useProfile();
@@ -30,6 +30,8 @@ export default function Dashboard() {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const { current_streak } = useStreak();
+    const { water } = useWater();
+    const { logs: healthLogs } = useHealthLogs();
 
     const [aiCoachData, setAiCoachData] = useState<AICoachData | null>(null);
     const [loadingAI, setLoadingAI] = useState(false);
@@ -46,14 +48,14 @@ export default function Dashboard() {
     const currentCalories = Math.round(dailyTotals.calories);
     const targetCalories = profile?.daily_calorie_goal || 2000;
 
-    // const { logs: healthLogs } = useHealthLogs();
-
     // AI Coach Analizi
     useEffect(() => {
         const fetchAI = async () => {
             if (!profile?.is_pro || meals.length === 0) return;
             setLoadingAI(true);
             try {
+                const glucose = healthLogs.find((l: any) => l.type === 'blood_sugar')?.value || 0;
+
                 const data: DailyData = {
                     date: new Date().toISOString().split('T')[0],
                     consumed: {
@@ -61,9 +63,9 @@ export default function Dashboard() {
                         protein: Math.round(dailyTotals.protein),
                         carbs: Math.round(dailyTotals.carbs),
                         fat: Math.round(dailyTotals.fat),
-                        fiber: 0, // Health logs'dan gelebilir ama şimdilik basitleştirelim
+                        fiber: Math.round(dailyTotals.fiber),
                         sugar: 0,
-                        water_ml: 1500 // Mock data for now
+                        water_ml: water
                     },
                     targets: {
                         calories: targetCalories,
@@ -78,7 +80,8 @@ export default function Dashboard() {
                     has_diabetes: (profile as any).has_diabetes || false,
                     meals: meals.map((m: any) => ({ name: m.food_name, calories: m.calories, meal_type: m.meal_type })),
                     streak_days: current_streak,
-                    weight_trend: 'stable'
+                    weight_trend: 'stable',
+                    blood_sugar: glucose > 0 ? glucose : undefined
                 };
                 const feedback = await getDailyAIFeedback(data);
                 if (feedback) setAiCoachData(feedback);

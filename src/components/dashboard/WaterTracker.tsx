@@ -1,57 +1,25 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { useProfile } from '@/hooks/useProfile';
-import { supabase } from '@/lib/supabase';
 import { IconWater } from '@/components/brand';
 import { checkAchievements } from '@/lib/achievements';
+import { useWater } from '@/hooks/useWater';
 
 export const WaterTracker = () => {
     const { user } = useAuth();
     const { profile, refreshProfile } = useProfile();
-    const [water, setWater] = useState(0);
+    const { water, addWater: addWaterHook } = useWater();
     const [loading, setLoading] = useState(false);
 
     const target = profile?.daily_water_goal || 2500;
     const percentage = Math.min((water / target) * 100, 100);
 
-    // Fetch today's water
-    useEffect(() => {
-        if (!user) return;
-
-        const fetchWater = async () => {
-            const startOfDay = new Date();
-            startOfDay.setHours(0, 0, 0, 0);
-            const endOfDay = new Date();
-            endOfDay.setHours(23, 59, 59, 999);
-
-            const { data } = await supabase
-                .from('water_logs')
-                .select('amount_ml')
-                .eq('user_id', user.id)
-                .gte('created_at', startOfDay.toISOString())
-                .lte('created_at', endOfDay.toISOString());
-
-            if (data) {
-                const total = data.reduce((acc: number, curr: { amount_ml: number }) => acc + curr.amount_ml, 0);
-                setWater(total);
-            }
-        };
-        fetchWater();
-    }, [user]);
-
     const addWater = async (amount: number) => {
         if (!user || loading) return;
         setLoading(true);
-        // Optimistic UI update
-        const previousWater = water;
-        setWater(w => Math.min(w + amount, 10000));
-
         try {
-            await supabase.from('water_logs').insert([{
-                user_id: user.id,
-                amount_ml: amount
-            }]);
+            await addWaterHook(amount);
 
             // Check for water achievements
             await checkAchievements(user.id, 'water');
@@ -60,7 +28,6 @@ export const WaterTracker = () => {
             await refreshProfile();
         } catch (error) {
             console.error('Error adding water:', error);
-            setWater(previousWater);
         } finally {
             setLoading(false);
         }

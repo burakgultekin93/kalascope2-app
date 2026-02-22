@@ -41,6 +41,7 @@ export const parseAIResponse = (rawContent: string | null): AnalysisResult => {
                 protein_total: Number((per100g.protein_per_100g * multiplier).toFixed(1)),
                 carbs_total: Number((per100g.carbs_per_100g * multiplier).toFixed(1)),
                 fat_total: Number((per100g.fat_per_100g * multiplier).toFixed(1)),
+                fiber_total: Number((per100g.fiber_per_100g * multiplier).toFixed(1)),
             };
         });
 
@@ -49,7 +50,8 @@ export const parseAIResponse = (rawContent: string | null): AnalysisResult => {
             protein: Number((acc.protein + curr.protein_total).toFixed(1)),
             carbs: Number((acc.carbs + curr.carbs_total).toFixed(1)),
             fat: Number((acc.fat + curr.fat_total).toFixed(1)),
-        }), { calories: 0, protein: 0, carbs: 0, fat: 0 });
+            fiber: Number((acc.fiber + curr.fiber_total).toFixed(1)),
+        }), { calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0 });
 
         return {
             foods: processedFoods,

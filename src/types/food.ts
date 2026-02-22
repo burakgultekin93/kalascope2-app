@@ -13,9 +13,10 @@ export interface DetectedFood {
     protein_total: number;
     carbs_total: number;
     fat_total: number;
+    fiber_total: number;
 }
 
 export interface AnalysisResult {
     foods: DetectedFood[];
-    totals: { calories: number; protein: number; carbs: number; fat: number };
+    totals: { calories: number; protein: number; carbs: number; fat: number; fiber: number };
 }

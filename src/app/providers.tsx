@@ -1,7 +1,6 @@
 import { AuthProvider } from '@/hooks/useAuth';
-import { ProfileProvider } from '@/providers/ProfileProvider';
+import { ProfileProvider } from '../providers/ProfileProvider';
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { openai } from '@/lib/openai';
 
 type Theme = "dark" | "light" | "system"
 

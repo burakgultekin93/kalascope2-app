@@ -17,6 +17,7 @@ export interface DailyData {
     meals: { name: string; calories: number; meal_type: string }[];
     streak_days: number;
     weight_trend: 'losing' | 'stable' | 'gaining';
+    blood_sugar?: number;
 }
 
 const COACH_PROMPT = `Sen KaloScope AI Beslenme Koçusun.
@@ -25,7 +26,7 @@ Kullanıcının günlük beslenme verilerini analiz edip kısa, motive edici, T�
 KURALLAR:
 1. Her zaman destekleyici ve pozitif ol — eleştirme, yönlendir.
 2. Kişinin diyet planına göre değerlendir (keto'da düşük karb iyi, akdeniz'de dengeli iyi).
-3. Diyabetik kullanıcılara kan şekeri dostu tavsiyeler ver.
+3. Diyabetik kullanıcılara kan şekeri dostu tavsiyeler ver. Eğer kan şekeri verisi (blood_sugar) varsa onu da yorumla.
 4. Makro dengesizliklerini nazikçe belirt ve pratik çözüm öner.
 5. Streak'i kutla (özellikle 7, 14, 30 gün).
 6. ASLA "daha az ye" deme — "X ekle" veya "Y ile değiştir" de.
@@ -55,6 +56,7 @@ export async function getDailyAIFeedback(data: DailyData) {
 Tarih: ${data.date}
 Diyet Planı: ${data.diet_plan}
 Diyabet: ${data.has_diabetes ? 'Evet' : 'Hayır'}
+Kan Şekeri: ${data.blood_sugar ? data.blood_sugar + ' mg/dL' : 'Girilmedi'}
 Streak: ${data.streak_days} gün
 Kilo Trendi: ${data.weight_trend}
 
@@ -62,7 +64,7 @@ HEDEFLER: ${data.targets.calories} kcal | P:${data.targets.protein}g | K:${data.
 GERÇEKLEŞEN: ${data.consumed.calories} kcal | P:${data.consumed.protein}g | K:${data.consumed.carbs}g | Y:${data.consumed.fat}g | Lif:${data.consumed.fiber}g | Şeker:${data.consumed.sugar}g | Su:${data.consumed.water_ml}ml
 
 ÖĞÜNLER:
-${data.meals.map(m => `- ${m.meal_type}: ${m.name} (${m.calories} kcal)`).join('\n')}
+${data.meals.map((m: any) => `- ${m.meal_type}: ${m.name} (${m.calories} kcal)`).join('\n')}
 
 Değerlendir ve JSON döndür.` }
             ]

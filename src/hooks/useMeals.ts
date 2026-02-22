@@ -11,6 +11,7 @@ export interface MealRecord {
     protein: number;
     carbs: number;
     fat: number;
+    fiber: number;
     meal_type: string;
     logged_date: string;
     created_at: string;
@@ -56,19 +57,20 @@ export const useMeals = (dateStr?: string) => {
         try {
             const { error } = await supabase.from('meals').delete().eq('id', id);
             if (error) throw error;
-            setMeals(meals.filter(m => m.id !== id));
+            setMeals(meals.filter((m: MealRecord) => m.id !== id));
         } catch (error) {
             console.error('Error deleting meal:', error);
             throw error;
         }
     };
 
-    const dailyTotals = meals.reduce((acc, curr) => ({
+    const dailyTotals = meals.reduce((acc: { calories: number, protein: number, carbs: number, fat: number, fiber: number }, curr: MealRecord) => ({
         calories: acc.calories + (curr.calories || 0),
         protein: acc.protein + (curr.protein || 0),
         carbs: acc.carbs + (curr.carbs || 0),
         fat: acc.fat + (curr.fat || 0),
-    }), { calories: 0, protein: 0, carbs: 0, fat: 0 });
+        fiber: acc.fiber + (curr.fiber || 0),
+    }), { calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0 });
 
     return { meals, dailyTotals, loading, fetchMeals, deleteMeal };
 };
