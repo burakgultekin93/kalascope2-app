@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Leaf, Info } from 'lucide-react';
+import { Info } from 'lucide-react';
 
 export interface DietPlan {
     id: string;

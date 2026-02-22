@@ -1,10 +1,13 @@
+import { useState, useEffect } from 'react';
 import { CalorieRings } from '@/components/dashboard/CalorieRings';
 import { MacroCards } from '@/components/dashboard/MacroCards';
 import { MealTimeline } from '@/components/dashboard/MealTimeline';
 import { WaterTracker } from '@/components/dashboard/WaterTracker';
 import { useProfile } from '@/hooks/useProfile';
 import { useMeals } from '@/hooks/useMeals';
-import { Logo, IconScan } from '@/components/brand';
+import { useStreak } from '@/hooks/useStreak';
+import { supabase } from '@/lib/supabase';
+import { Logo } from '@/components/brand';
 import { HealthLogger } from '@/components/dashboard/HealthLogger';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useHealthLogs } from '@/hooks/useHealthLogs';
@@ -16,7 +19,9 @@ import { Button } from '@/components/ui/button';
 import { XPBar } from '@/components/gamification/XPBar';
 import { StreakCounter } from '@/components/gamification/StreakCounter';
 import { DietComplianceBanner } from '@/components/diet/DietComplianceBanner';
-import { getDailyAIFeedback, DailyData } from '@/lib/aiCoach';
+import { AICoachCard } from '@/components/diet/AICoachCard';
+import { getDailyAIFeedback } from '@/lib/aiCoach';
+import type { DailyData, AICoachData } from '@/lib/aiCoach';
 
 export default function Dashboard() {
     const { profile } = useProfile();
@@ -29,7 +34,6 @@ export default function Dashboard() {
     const [loadingAI, setLoadingAI] = useState(false);
     const [activeDiet, setActiveDiet] = useState<any>(null);
 
-    const dietKey = `diet_status_${profile?.diet_preference || 'standard'}`;
     const formattedDate = new Intl.DateTimeFormat('tr-TR', { day: 'numeric', month: 'long', weekday: 'long' }).format(new Date());
 
     const macros = {
@@ -41,7 +45,7 @@ export default function Dashboard() {
     const currentCalories = Math.round(dailyTotals.calories);
     const targetCalories = profile?.daily_calorie_goal || 2000;
 
-    const { logs: healthLogs } = useHealthLogs();
+    // const { logs: healthLogs } = useHealthLogs();
 
     // AI Coach Analizi
     useEffect(() => {
@@ -71,7 +75,7 @@ export default function Dashboard() {
                     },
                     diet_plan: profile?.diet_preference || 'standard',
                     has_diabetes: (profile as any).has_diabetes || false,
-                    meals: meals.map(m => ({ name: m.food_name, calories: m.calories, meal_type: m.meal_type })),
+                    meals: meals.map((m: any) => ({ name: m.food_name, calories: m.calories, meal_type: m.meal_type })),
                     streak_days: current_streak,
                     weight_trend: 'stable'
                 };

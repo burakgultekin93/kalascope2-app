@@ -1,4 +1,12 @@
-import openai from './openai';
+import { openai } from './openai';
+
+export interface AICoachData {
+    mood: 'excellent' | 'good' | 'neutral' | 'warning' | 'alert';
+    feedback_tr: string;
+    suggestions_tr: string[];
+    compliance_score: number;
+    macro_balance_score: number;
+}
 
 export interface DailyData {
     date: string;

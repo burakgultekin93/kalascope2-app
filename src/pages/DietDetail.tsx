@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { motion } from 'react-router-dom';
-import { ArrowLeft, CheckCircle2, AlertTriangle, Play, Loader2, Info, ChevronRight } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { ArrowLeft, CheckCircle2, AlertTriangle, Play, Loader2, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useProfile } from '@/hooks/useProfile';
 import { supabase } from '@/lib/supabase';
-import { DietPlan } from '@/components/diet/DietPlanCard';
+import type { DietPlan } from '@/components/diet/DietPlanCard';
+import { AchievementBadge, type AchievementBadgeProps } from '@/components/gamification/AchievementBadge';
 import { toast } from 'sonner';
 
 export default function DietDetail() {

@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/hooks/useAuth';
-import { AchievementBadge, AchievementBadgeProps } from '@/components/gamification/AchievementBadge';
+import { AchievementBadge } from '@/components/gamification/AchievementBadge';
 import { XPBar } from '@/components/gamification/XPBar';
-import { ArrowLeft, Loader2, Trophy, Info } from 'lucide-react';
+import { ArrowLeft, Loader2, Trophy } from 'lucide-react';
 import { useProfile } from '@/hooks/useProfile';
 
 interface Achievement {

@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
-import { DietPlan, DietPlanCard } from '@/components/diet/DietPlanCard';
+import type { DietPlan } from '@/components/diet/DietPlanCard';
+import { DietPlanCard } from '@/components/diet/DietPlanCard';
 import { ArrowLeft, Loader2, Search } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
 
 export default function DietPlans() {
     const navigate = useNavigate();
-    const { t } = useTranslation();
+    const { t } = useTranslation(); // t is used in DietPlanCard or can be used here later
     const [plans, setPlans] = useState<DietPlan[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');

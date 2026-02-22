@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
 import { CheckCircle2, Crown, ArrowLeft, Lock, ShieldCheck, Loader2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import type { DietPlan } from '@/components/diet/DietPlanCard';
 import { Logo } from '@/components/brand';
 import { toast } from 'sonner';
 import { useTranslation } from '@/hooks/useTranslation';

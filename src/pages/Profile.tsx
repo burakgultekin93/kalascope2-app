@@ -1,4 +1,4 @@
-import { LogOut, ChevronRight, Crown, Moon } from 'lucide-react';
+import { LogOut, ChevronRight, Crown, Moon, FileText } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useProfile } from '@/hooks/useProfile';
 import type { DietPreference } from '@/utils/calories';
@@ -111,7 +111,10 @@ export default function Profile() {
                         <ChevronRight className="size-4 text-zinc-400" />
                     </div>
 
-                    <div className="flex items-center justify-between p-4 border-b border-zinc-100 dark:border-zinc-800 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
+                    <div
+                        onClick={() => navigate('/privacy')}
+                        className="flex items-center justify-between p-4 border-b border-zinc-100 dark:border-zinc-800 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
+                    >
                         <div className="flex items-center gap-3">
                             <div className="p-2 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-xl"><IconBadge size={18} /></div>
                             <span className="font-medium text-sm">{t('profile_privacy')}</span>
@@ -119,6 +122,16 @@ export default function Profile() {
                         <ChevronRight className="size-4 text-zinc-400" />
                     </div>
 
+                    <div
+                        onClick={() => navigate('/terms')}
+                        className="flex items-center justify-between p-4 border-b border-zinc-100 dark:border-zinc-800 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
+                    >
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 rounded-xl"><FileText className="size-4" /></div>
+                            <span className="font-medium text-sm">{t('terms_of_service')}</span>
+                        </div>
+                        <ChevronRight className="size-4 text-zinc-400" />
+                    </div>
 
                     <div className="flex items-center justify-between p-4 border-b border-zinc-100 dark:border-zinc-800 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800/50" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
                         <div className="flex items-center gap-3">
